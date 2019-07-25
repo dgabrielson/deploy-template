@@ -1,0 +1,34 @@
+#### begin cluster deploy ssh config ####
+Host head-rac
+    HostName head-rac.gauss.math.umanitoba.ca
+    User mathadmin
+
+Host provision
+    HostName provision.gauss.math.umanitoba.ca
+    User mathadmin
+
+Host head
+    HostName head.gauss.math.umanitoba.ca
+    User mathadmin
+
+Host mcp
+    HostName mcp.gauss.math.umanitoba.ca
+    User mathadmin
+
+Host ldap
+    HostName ldap.gauss.math.umanitoba.ca
+    User mathadmin
+
+Host files
+    HostName files.gauss.math.umanitoba.ca
+    User mathadmin
+
+Host db0
+    HostName db0.gauss.math.umanitoba.ca
+    User mathadmin
+
+Host logsrv
+    HostName logsrv.gauss.math.umanitoba.ca
+    User mathadmin
+
+#### end cluster deploy ssh config ####

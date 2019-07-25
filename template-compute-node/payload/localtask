@@ -1,0 +1,5 @@
+#!/bin/bash
+source /usr/local/share/gauss/bin/activate
+export DJANGO_SETTINGS_MODULE="gauss_site.settings"
+/usr/local/share/gauss/bin/localtask \
+    "$@"

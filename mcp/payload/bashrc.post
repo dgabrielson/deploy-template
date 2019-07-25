@@ -1,0 +1,6 @@
+
+if [ -d ${HOME}/.bash_functions.d ]; then
+    for f in $(ls ${HOME}/.bash_functions.d/*.sh | sort) ; do
+        source "$f"
+    done
+fi

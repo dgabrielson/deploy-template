@@ -1,0 +1,47 @@
+{
+    "SERVER_EMAIL": "error-logapp@example.com", 
+    "STATIC_ROOT": "/storage/html/static", 
+    "MEDIA_ROOT": "/storage/html/media", 
+    "ADMIN_SITE_HEADER": "Cluster SysLog", 
+    "EMAIL_USE_TLS": true, 
+    "STATIC_URL": "/static/", 
+    "RSYSLOG_HOST_CHOICES": [
+        "cache", 
+        "cdm", 
+        "db0", 
+        "dispatch", 
+        "files", 
+        "kvm0", 
+        "logapp", 
+        "logsrv", 
+        "mail", 
+        "exampleapp", 
+        "mcp", 
+        "provision", 
+        "www-files"
+    ], 
+    "EMAIL_BACKEND": "django.core.mail.backends.smtp.EmailBackend", 
+    "TEMPLATE_DEBUG": false, 
+    "DEFAULT_FROM_EMAIL": "no-reply@example.com", 
+    "DATABASES": {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2", 
+            "NAME": "rsyslog", 
+            "HOST": "db0.example.com", 
+            "USER": "logapp", 
+            "PASSWORD": "7D#*tc7.HWYl", 
+            "PORT": ""
+        }
+    }, 
+    "EMAIL_PORT": 25, 
+    "ALLOWED_HOSTS": [
+        "logapp.example.com", 
+        "logapp", 
+        "www.example.com", 
+        "test.example.com"
+    ], 
+    "SECRET_KEY": "t1uwrd$rpu6=4(i$=-=6fe=2pd%7ad5967w6+(3m*+50%qo=lb", 
+    "MEDIA_URL": "/cluster/syslog/media/", 
+    "DEBUG": false, 
+    "EMAIL_HOST": "mail.cc.umanitoba.ca"
+}

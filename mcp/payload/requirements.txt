@@ -1,0 +1,5 @@
+pip
+pyparsing
+appdirs
+Fabric
+pycrypto

@@ -1,0 +1,9 @@
+Django
+pytz
+psycopg2
+python-memcached
+
+django-math-siteconf
+-e hg+https://bitbucket.org/ero-sennin/django-dumpdb#egg=django-dumpdb
+-e git+https://github.com/dgabrielson/django-fack.git#egg=django-fack
+

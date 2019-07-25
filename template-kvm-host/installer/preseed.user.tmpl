@@ -1,0 +1,15 @@
+
+### USER SETUP ###
+
+# CLUSTER_ADMIN has password cluster2017
+# Generate crypted password with: mkpasswd -m sha-512
+
+user-setup-udeb passwd/user-fullname string Cluster Administrator
+user-setup-udeb passwd/username string CLUSTER_ADMIN
+user-setup-udeb passwd/user-password-crypted password $6$0SeVuo2bzN53O$xmDdcKjxXkLLC6yeb71.rSjKXEZ5pidtlQAOoMknyWqFUIjkOduJF/uz8fOaNcotWDjzy8F3LCeQvhPxKOU4W.
+
+d-i passwd/user-fullname string Cluster Administrator
+d-i passwd/username string CLUSTER_ADMIN
+d-i passwd/user-password-crypted password $6$0SeVuo2bzN53O$xmDdcKjxXkLLC6yeb71.rSjKXEZ5pidtlQAOoMknyWqFUIjkOduJF/uz8fOaNcotWDjzy8F3LCeQvhPxKOU4W.
+
+##################

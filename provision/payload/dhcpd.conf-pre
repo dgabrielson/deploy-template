@@ -1,0 +1,34 @@
+ddns-update-style none;
+ddns-updates off;
+ignore client-updates;
+allow booting;
+allow bootp;
+authorative;
+authoritative;
+boot-unknown-clients on;
+ping-check off;
+one-lease-per-client on;
+default-lease-time 7200;
+max-lease-time 7200;
+allow-unknown-clients;
+
+subnet 192.168.1.0 netmask 255.255.255.0 { 
+    option domain-name "example.com";
+    option domain-search "example.com";
+    option subnet-mask 255.255.255.0;    
+    option broadcast-address 192.168.1.255; 
+    option routers 192.168.1.1;
+    option domain-name-servers 192.168.1.1;
+    filename "pxelinux.0";
+    next-server 192.168.1.1;
+
+    pool {
+        # General pool
+        range 192.168.1.100 192.168.1.199;
+    }
+}
+
+# .1 - gateway
+# .2 - bridge
+
+#######################################################

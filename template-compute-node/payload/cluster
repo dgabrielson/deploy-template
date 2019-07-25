@@ -1,0 +1,6 @@
+#!/bin/bash
+source /usr/local/share/gauss/bin/activate
+/usr/local/share/gauss/bin/cluster \
+    --settings gauss_site.settings \
+    --path /usr/local/share/gauss \
+    "$@"

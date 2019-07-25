@@ -1,0 +1,3 @@
+#database	user	password
+gauss_web   django  uZvxKOP0hKrdG5WAwf64ytzU
+jarino	jarino	rQNOKM0kp5C6wustSTP56eL8

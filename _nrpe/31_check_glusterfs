@@ -1,0 +1,2 @@
+Defaults:nagios !requiretty
+nagios ALL=(root) NOPASSWD:/usr/sbin/gluster volume status [[\:graph\:]]* detail,/usr/sbin/gluster volume heal [[\:graph\:]]* info

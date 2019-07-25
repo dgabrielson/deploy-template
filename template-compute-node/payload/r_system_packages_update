@@ -1,0 +1,18 @@
+#!/usr/bin/env Rscript
+
+library('methods')
+
+if ( ! library('shiny', logical.return=TRUE, character.only=TRUE) )
+{
+    install.packages('shiny', repos='https://cran.rstudio.com/')
+}
+
+pkg_list = c('rmarkdown', 'Rmpi')
+
+for (pkg in pkg_list)
+{
+    if ( ! library(pkg, logical.return=TRUE, character.only=TRUE) )
+    {
+        install.packages(pkg)
+    }
+}

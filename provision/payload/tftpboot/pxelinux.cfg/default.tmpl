@@ -1,0 +1,16 @@
+SERIAL	     ttyS0
+IMPLICIT     0
+DISPLAY      pxelinux.cfg/boot.msg
+PROMPT       1
+TIMEOUT      50
+ONTIMEOUT    serial
+DEFAULT	     serial
+
+
+label serial
+	menu label Ubuntu Server (serial/auto/preseed)
+	kernel linux
+        append initrd=initrd.gz BOOT_DEBUG=2 TERM=vt102 locale=en_US.UTF-8 console-setup/layoutcode=us domain=example.com hostname=hostname auto=true url=http://PROVISION_IP_ADDR/preseed.cfg --- text console=ttyS0 console=ttyS0,115200
+
+
+

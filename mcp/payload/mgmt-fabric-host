@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# Fabric bash functions
+
+VIRTUALENVWRAPPER_PYTHON=/usr/bin/python
+# Ubuntu 16.04
+if [ -f /etc/bash_completion.d/virtualenvwrapper ]; then
+    source /etc/bash_completion.d/virtualenvwrapper
+fi
+
+FABFILE="~/mgmt-fab/fabfile"
+
+
+function mgmt-fabric-host()
+{
+    local host="$1"
+    local hostname="${host}"
+    local status
+    shift 1
+    if [[ ${hostname} == *"@"* ]]; then
+        hostname=$(echo "${hostname}" | cut -f 2 -d @)
+    fi
+    if ! ping -qc 1 ${hostname}; then
+        echo "Host is not alive"
+        return 1
+    fi
+    workon fab
+    fab -f "${FABFILE}" -H "${host}" "$@"
+    status=$?
+    deactivate
+    if [[ -n "${OLDPWD}" ]]; then
+        cd - > /dev/null
+    fi
+    return $status
+}
+
+mgmt-fabric-host "$@"

@@ -1,0 +1,74 @@
+#!/usr/bin/env python
+from __future__ import unicode_literals, print_function
+
+import os
+
+from cluster_conf_fmt import CLUSTER_CONF_FMT
+
+
+def cluster_conf_dict(f):                   
+    result = {}
+    with open(f) as fp:
+        for line in fp:
+            line = line.strip()
+            if line.startswith('#'):
+                continue
+            d = dict(zip(CLUSTER_CONF_FMT, line.split('\t')))
+            result[d['name']] = d
+    return result
+
+                       
+def read_value(filename, hostname, key):
+    cluster = cluster_conf_dict(filename)
+    host = cluster[hostname]
+    try:
+        value = host[key]
+    except KeyError:
+        if key in CLUSTER_CONF_FMT:
+            return ''
+        raise
+    if value == 'X':
+        value = ''
+    return value
+
+
+def makefile_settings(filename, hostname):
+    def _makefile_key(s):
+        return s.upper().replace('-', '_')
+        
+    def _format(diff):
+        result = ""
+        for key, value in diff.items():
+            if key != 'BASH_EXECUTION_STRING':
+                value = value.strip("'")
+                result += "{} = {}\n".format(_makefile_key(key), value)
+        return result
+
+    result = {}
+    for k in CLUSTER_CONF_FMT:
+        v = read_value(filename, hostname, k)
+        result[k] = v
+    phys_host = result.get('phys-host', None)
+    if phys_host:
+        result['kvm-bridge'] = read_value(filename, phys_host, 'eth-name')
+        
+    return _format(result)
+
+        
+
+def main(script, hostname, key=None):
+    """
+    """
+    absscript = os.path.abspath(script)
+    dirname = os.path.dirname(absscript)
+    parent = os.path.dirname(dirname)
+    cluster_conf = os.path.join(parent, 'cluster.conf')
+    if key is not None:
+        return read_value(cluster_conf, hostname, key)
+    else:
+        return makefile_settings(cluster_conf, hostname)
+    
+    
+if __name__ == '__main__':
+    import sys
+    print(main(*sys.argv))

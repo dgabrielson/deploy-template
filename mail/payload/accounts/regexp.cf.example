@@ -1,0 +1,2 @@
+# all emails to test, test0, test15, etc go to QA
+/^test[0-9]*@example.com/ qa@example.com

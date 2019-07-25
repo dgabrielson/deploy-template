@@ -1,0 +1,3 @@
+TODO
+apt-get install qemu-kvm libvirt-bin
+https://wiki.debian.org/KVM

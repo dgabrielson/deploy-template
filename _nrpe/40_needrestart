@@ -1,0 +1,3 @@
+# Allow nagios to execute the needrestart command
+# Newer versions of needrestart support running as a nagios plugin with -p
+nagios ALL=(root) NOPASSWD:/usr/sbin/needrestart -b

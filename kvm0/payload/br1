@@ -1,0 +1,13 @@
+auto eth1
+iface eth1 inet manual
+
+auto br1
+iface br1 inet static
+        address 192.168.51.2
+        network 192.168.51.0
+        broadcast 192.168.51.255
+        netmask 255.255.255.0
+        bridge_ports eth1
+        bridge_stp off
+        bridge_fd 0
+        bridge_maxwait 0

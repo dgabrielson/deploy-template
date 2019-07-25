@@ -1,0 +1,14 @@
+#### begin generated hosts ####
+192.168.1.1	provision.example.com	provision
+192.168.1.5	mcp.example.com	mcp
+192.168.1.10	files.example.com	files
+192.168.1.15	db0.example.com	db0
+192.168.1.25	logsrv.example.com	logsrv
+192.168.1.30	mail.example.com	mail
+192.168.1.35	cache.example.com	cache
+192.168.1.45	logapp.example.com	logapp
+192.168.1.56	www-files.example.com	www-files
+192.168.1.200	dispatch.example.com	dispatch
+192.168.1.201	kvm0.example.com	kvm0
+192.168.1.202	storage0.example.com	storage0
+#### end generated hosts ####

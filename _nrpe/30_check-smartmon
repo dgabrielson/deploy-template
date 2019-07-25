@@ -1,0 +1,2 @@
+Defaults:nagios !requiretty
+nagios ALL=(root) NOPASSWD:/usr/local/sbin/nagios_check_smartmon.py

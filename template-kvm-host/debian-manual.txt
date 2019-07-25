@@ -1,0 +1,85 @@
+https://www.debian.org/doc/manuals/securing-debian-howto/ch4.en.html
+
+
+# ssh as user account
+su
+# enter root password
+apt-get update
+apt-get upgrade
+apt-get install needrestart debian-goodies sudo mdadm gdisk
+adduser CLUSTER_USER sudo
+exit # back to user shell
+exit # from user shell
+# re-ssh back as user
+sudo true
+# verify that this works
+sudo passwd -l root # disable root
+
+### Resize things
+cd /
+sudo -s
+lsof /home
+umount /home
+e2fsck -f /dev/mapper/kvm0--vg-home 
+resize2fs -p /dev/mapper/kvm0--vg-home 10G
+lvreduce -L 10G /dev/mapper/kvm0--vg-home
+e2fsck -f /dev/mapper/kvm0--vg-home
+mount /home
+
+### Setup data mirror:
+gdisk /dev/sdb # remove existing partitions; configure single disk partition with type fd00
+gdisk /dev/sdc # remove existing partitions; configure single disk partition with type fd00
+mdadm --create --verbose /dev/md0 --chunk 1024 --level=1 --raid-devices=2 /dev/sdb1 /dev/sdc1
+watch cat /proc/mdstat # wait until the array is finished building
+cat << EOF | tee /etc/mdadm/mdadm.conf
+MAILADDR reports@example.com
+MAILFROM mdadm-mh314-kvm0@example.com
+EOF
+mdadm  --detail --scan | tee -a /etc/mdadm/mdadm.conf
+update-initramfs -u
+pvcreate /dev/md0
+vgcreate data0 /dev/md0
+
+free_extents=$(vgdisplay data0 | grep Free | cut -f 2 -d / | tr -s ' ' | cut -f 3 -d ' ')
+#lvcreate -l ${free_extents} -n data data0  # use all the space!
+lvcreate -L300G  -nvmdisks data0
+
+# see http://ewams.net/?view=Formatting_a_RAID_volume_with_ext4
+sudo mkfs.ext4 -v -m .01 -b 4096 -E stride=16384,stripe-width=16384 -L data /dev/data0/vmdisks
+
+mkdir -p /var/local/disks/
+echo "/dev/data0/vmdisks /var/local/disks            ext4    defaults        0       2" | tee -a /etc/fstab
+mount /var/local/disks
+
+apt-get install qemu-kvm libvirt-bin virtinst
+
+# setup bridges: /etc/networking/interfaces
+#allow-hotplug eth0
+#iface eth0 inet dhcp
+
+auto eth0
+iface eth0 inet manual
+
+auto br0
+iface br0 inet dhcp
+        bridge_ports eth0
+        bridge_stp off
+        bridge_fd 0
+        bridge_maxwait 0
+
+auto eth1
+iface eth1 inet manual
+
+auto br1
+iface br1 inet static
+        address 192.168.1.254
+        netmask 255.255.255.0
+        network 192.168.1.0
+        broadcast 192.168.1.255
+        gateway 192.168.1.1
+        bridge_ports eth1
+        bridge_stp off
+        bridge_fd 0
+        bridge_maxwait 0
+
+# LVM backups http://www.tldp.org/HOWTO/LVM-HOWTO/snapshots_backup.html

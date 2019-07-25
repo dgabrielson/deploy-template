@@ -1,0 +1,96 @@
+#!/usr/bin/perl
+
+# ============================== SUMMARY =====================================
+#
+# Program : check_dell_device_health.pl
+# Version : 0.1
+# Date    : August 25 2013
+# Author  : Vishwanath Patil  - vishwanath_s_patil@dell.com
+#
+# Summary : This is a nagios plugin that checks the status of Dell devices
+#           monitored by Dell iDRAC7 on Dell PowerEdge servers via SNMP
+#
+# Licence : GPL - summary below, full text at http://www.fsf.org/licenses/gpl.txt
+#================================================================================
+
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful, but
+# WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+# General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+
+use lib "/usr/lib/perl5/vendor_perl/5.8.8/Net";
+
+#use strict;
+use warnings;
+use Net::SNMP;
+
+my $totalArgs = $#ARGV + 1;
+my $snmpCommunity = 'public';
+my $snmpPort = 161;
+my $serverName = "";
+
+my $deviceIPAddress = $ARGV[0];
+my $deviceGlobalHealthStatusOid = $ARGV[1];
+if( $totalArgs < 2)
+{
+	print "Invalid args:";
+	exit 1;
+}
+
+if ( $totalArgs > 2 &&  "$ARGV[2]" ne "" )
+{
+	$snmpCommunity  = $ARGV[2];
+}
+
+if (  $totalArgs > 2 && "$ARGV[3]" ne "" )
+{
+        $snmpPort = $ARGV[3];
+}
+
+if (  $totalArgs > 3 && "$ARGV[4]" ne "" )
+{
+        $serverName = $ARGV[4];
+}
+
+use constant OK 	=> 0;
+use constant WARNING 	=> 1;
+use constant CRITICAL	=> 2;
+use constant UNKNOWN 	=> 3;
+
+
+my ($session, $error) = Net::SNMP->session(Hostname => $deviceIPAddress,
+                                        Community => $snmpCommunity,
+                                        port => $snmpPort )            or  exit  UNKNOWN;
+my $deviceHealth = "";
+
+my $deviceHealthResponse = $session->get_request("$deviceGlobalHealthStatusOid")  or exit  UNKNOWN;
+
+$deviceHealth = $deviceHealthResponse->{"$deviceGlobalHealthStatusOid"};
+
+if ("$deviceHealth" eq "1" || "$deviceHealth" eq "2" || "$deviceHealth" eq "5" || "$deviceHealth" eq "6")
+{
+	print "Health: CRITICAL\n";
+	exit CRITICAL;
+}
+
+if ("$deviceHealth" eq "4")
+{
+	print "Health: WARNING\n";
+	exit WARNING;
+}
+if ("$deviceHealth" eq "3")
+{
+	print "Health: OK\n";
+	exit OK;
+}
+print "Health: UNKNOWN, ObjectStatusEnum = $deviceHealth\n";
+exit UNKNOWN;

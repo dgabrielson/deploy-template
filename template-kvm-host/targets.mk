@@ -1,0 +1,1 @@
+target_configs = fabadmin.evt hosts.extra.evt local_nrpe.evt nagios_check_mdstat.evt nagios_check_mdstat.evt nagios_check_smartmon.evt nagios_check_smartmon.evt sudoers_check_smartmon.evt nagios_needrestart.evt nagios_needrestart.evt sudoers_needrestart.evt root_crontab.evt usr_local_vmbackup.evt 

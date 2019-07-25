@@ -1,0 +1,11 @@
+To Update the PXE boot environment:
+
+Note:: Best practice is to save the old, working, tftpboot folder
+       before updating.
+
+* Mount or extract the ubuntu server ISO; e.g., to ~/Downloads/ubuntu-14.04.4-server-amd64/
+* cp ~/Downloads/ubuntu-14.04.4-server-amd64/install/netboot/ubuntu-installer/amd64/initrd.gz ubuntu-14.04.4-x86_64-initrd.gz 
+* cp ~/Downloads/ubuntu-14.04.4-server-amd64/install/netboot/ubuntu-installer/amd64/linux ubuntu-14.04.4-x86_64-kernel
+* cp ~/Downloads/ubuntu-14.04.4-server-amd64/install/netboot/ubuntu-installer/amd64/pxelinux.0 .
+* edit pxelinux.cfg/default # update kernel/initrd versions.
+* Remove old kernel versions

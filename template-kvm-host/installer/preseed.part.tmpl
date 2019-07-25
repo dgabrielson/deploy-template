@@ -1,0 +1,97 @@
+
+### PARTMAN SETUP ###
+
+d-i partman/early_command string vgs --separator=: --noheadings | cut -f1 -d: |while read vg ; do vgchange -an $vg ; done ; pvs --separator=: --noheadings | cut -f1 -d: | while read pv ; do pvremove -ff -y $pv ; done
+d-i partman-auto/disk string /dev/sda
+d-i partman/alignment string cylinder
+d-i partman-md/device_remove_md boolean true
+d-i partman-md/confirm boolean true
+d-i partman-lvm/device_remove_lvm boolean true
+d-i partman-lvm/confirm boolean true
+d-i partman/choose_partition select Finish
+d-i partman/confirm_write_new_label boolean true
+d-i partman-auto/method string lvm
+# gpt partitioning
+d-i partman-basicfilesystem/choose_label	string	gpt
+d-i partman-basicfilesystem/default_label	string	gpt
+d-i partman-partitioning/choose_label	string	gpt
+d-i partman-partitioning/default_label	string	gpt
+d-i partman/choose_label	string	gpt
+d-i partman/default_label	string	gpt
+partman-partitioning partman-partitioning/choose_label	string	gpt
+partman-auto-lvm partman-auto-lvm/new_vg_name string vg0
+d-i partman-auto-lvm/guided_size string max
+d-i partman-auto/expert_recipe string  kvmhost :: \
+1 1 1 free              \
+    $bios_boot{ }       \
+    method{ biosgrub }  \
+.                       \
+100 100 100 free                                \
+      $iflabel{ gpt }                         \
+      $reusemethod{  }                        \
+      $defaultignore{  }                      \
+      method{ efi }                           \
+      format{  }                              \
+.                                               \
+300 300 300 ext4                                \
+      $defaultignore{  }                      \
+      method{ format } format{ }              \
+      use_filesystem{ } filesystem{ ext4 }    \
+      mountpoint{ /boot }                     \
+.                                               \
+100% 10000 200% linux-swap   \
+        $lvmok{ }            \
+        method{ swap }       \
+        format{ }            \
+        lv_name{ swap }      \
+.                            \
+8192 9011 32768 ext4         \
+        $lvmok{ }            \
+        method{ format }     \
+        format{ }            \
+        use_filesystem{ }    \
+        filesystem{ ext4 }   \
+        mountpoint{ / }      \
+        lv_name{ root }     \
+.                            \
+8192 11469 65536 ext4         \
+        $lvmok{ }            \
+        method{ format }     \
+        format{ }            \
+        use_filesystem{ }    \
+        filesystem{ ext4 }   \
+        mountpoint{ /var/local/disks }      \
+        lv_name{ vmdisks }     \
+.                            \
+8192 11469 65536 ext4         \
+        $lvmok{ }            \
+        method{ format }     \
+        format{ }            \
+        use_filesystem{ }    \
+        filesystem{ ext4 }   \
+        mountpoint{ /var/local/disks/backup }      \
+        lv_name{ vmbackup }     \
+. \
+1024 1835 -1 ext4         \
+        $lvmok{ }            \
+        method{ format }     \
+        format{ }            \
+        use_filesystem{ }    \
+        filesystem{ ext4 }   \
+        mountpoint{ /var/extra }      \
+        lv_name{ extra }     \
+.
+d-i partman-auto/choose_recipe select kvmhost
+d-i partman/choose_partition        select Finish partitioning and write changes to disk
+d-i partman-md/confirm_nooverwrite boolean true
+d-i partman-md/confirm boolean true
+d-i partman-lvm/confirm_nooverwrite boolean true
+d-i partman-lvm/confirm boolean true
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select Finish
+d-i partman/confirm_nooverwrite boolean true
+d-i partman/confirm boolean true
+partman-efi partman-efi/non_efi_system boolean true
+
+#####################
+

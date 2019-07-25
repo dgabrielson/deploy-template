@@ -1,0 +1,7 @@
+
+MAILTO="reports@gauss.math.umanitoba.ca"
+
+45 7 * * mon-fri /usr/local/sbin/julialang_updater
+45 8 * * mon-fri /usr/local/sbin/rstudio_updater
+45 9 * * mon-fri /usr/local/sbin/shinyserver_updater
+@daily /usr/local/sbin/r_system_packages_update

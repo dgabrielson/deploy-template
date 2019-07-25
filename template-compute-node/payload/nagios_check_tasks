@@ -1,0 +1,33 @@
+#!/bin/bash
+task_count="$(/usr/local/bin/cluster status | grep $(hostname -s) | cut -f 2)"
+
+if [ -n "${task_count}" ]; then
+    if [ "${task_count}" == "1" ]; then
+        message="${task_count} task"
+    else
+        message="${task_count} tasks"
+    fi
+else
+    message="Unknown task count"
+fi
+
+if [ "${task_count}" == "0" ]; then
+    echo "OK - ${message}"
+    exit 0
+fi
+
+# 1 - 16
+if [ "${task_count}" -ge 1 -a "${task_count}" -le 16 ]; then
+    echo "WARNING - ${message}"
+    exit 1
+fi
+
+# 17+
+if [ "${task_count}" -ge 17 ]; then
+    echo "CRITICAL - ${message}"
+    exit 2
+fi
+
+echo "UNKNOWN - ${message}"
+exit 3
+

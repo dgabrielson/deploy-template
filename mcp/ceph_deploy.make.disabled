@@ -1,0 +1,110 @@
+#
+# Use this to initialize a ceph cluster with this computer
+# being setup as a management node.
+#
+
+
+include ../_make/lib/check_defined.mk
+# Required standard variables:
+$(call check_defined, VIRTUAL_ENV MGMT_FABFILE FQDN)
+
+# Required additional variables:
+$(call check_defined, CEPH_DEPLOY_MON CEPH_DEPLOY_MGR CEPH_DEPLOY_OSD CEPH_DEPLOY_MDS CEPH_DEPLOY_ALL)
+
+
+CEPH_HOST_EVTS_1 = $(addprefix ../, $(addsuffix /fabadmin.evt, $(CEPH_DEPLOY_ALL)))
+CEPH_HOST_EVTS_2 = $(addprefix ../, $(addsuffix /apt_packages.evt, $(CEPH_DEPLOY_ALL)))
+
+NEW_ALL = $(addprefix ceph_deploy.new., $(addsuffix .evt, $(CEPH_DEPLOY_MON)))
+INSTALL_ALL = $(addprefix ceph_deploy.install., $(addsuffix .evt, $(CEPH_DEPLOY_ALL)))
+ADMIN_ALL = ceph_deploy.admin.$(NAME).evt $(addprefix ceph_deploy.admin., $(addsuffix .evt, $(CEPH_DEPLOY_MON)))
+MGR_ALL = $(addprefix ceph_deploy.mgr_create., $(addsuffix .evt, $(CEPH_DEPLOY_MGR)))
+OSD_ALL = $(addprefix ceph_deploy.osd_create., $(addsuffix .evt, $(CEPH_DEPLOY_OSD)))
+MDS_ALL = $(addprefix ceph_deploy.mds_create., $(addsuffix .evt, $(CEPH_DEPLOY_MDS)))
+
+
+ceph_deploy.install.evt: | $(CEPH_HOST_EVTS_1) $(CEPH_HOST_EVTS_2) fabadmin.evt
+	ping -qc 1 $(FQDN)
+	. $(VIRTUAL_ENV)/bin/activate && \
+	fab -f $(MGMT_FABFILE) -u $(DEPLOY_ADMIN) -H $(FQDN) \
+		sudo:"wget -q -O- 'https://download.ceph.com/keys/release.asc' | apt-key add" \
+		sudo:"echo deb https://download.ceph.com/debian-mimic/ $$(lsb_release -sc) main > /etc/apt/sources.list.d/ceph.list" \
+		sudo:"apt -q update" \
+		sudo:"apt -qy install ceph-deploy" \
+		run:"mkdir -p ~/ceph-deploy/"
+	touch "$@"
+
+
+$(NEW_ALL): ceph_deploy.new.%.evt: | ceph_deploy.install.evt
+ceph_deploy.new.%.evt:
+	ping -qc 1 $(FQDN)
+	. $(VIRTUAL_ENV)/bin/activate && \
+	fab -f $(MGMT_FABFILE) -u $(DEPLOY_ADMIN) -H $(FQDN) \
+		run:"cd ~/ceph-deploy/ && ceph-deploy --username fabadmin new $*"
+	touch "$@"
+
+
+$(INSTALL_ALL): ceph_deploy.install.%.evt:  $(NEW_ALL)
+	ping -qc 1 $(FQDN)
+	. $(VIRTUAL_ENV)/bin/activate && \
+	fab -f $(MGMT_FABFILE) -u $(DEPLOY_ADMIN) -H $(FQDN) \
+		run:"cd ~/ceph-deploy/ && ceph-deploy --username fabadmin install $*"
+	touch "$@"
+
+
+ceph_deploy.mon.create-initial.evt: $(INSTALL_ALL)
+	ping -qc 1 $(FQDN)
+	. $(VIRTUAL_ENV)/bin/activate && \
+	fab -f $(MGMT_FABFILE) -u $(DEPLOY_ADMIN) -H $(FQDN) \
+		run:"cd ~/ceph-deploy/ && ceph-deploy --username fabadmin mon create-initial"
+	touch "$@"
+
+
+$(ADMIN_ALL): ceph_deploy.admin.%.evt: ceph_deploy.mon.create-initial.evt
+	ping -qc 1 $(FQDN)
+	. $(VIRTUAL_ENV)/bin/activate && \
+	fab -f $(MGMT_FABFILE) -u $(DEPLOY_ADMIN) -H $(FQDN) \
+		run:"cd ~/ceph-deploy/ && ceph-deploy --username fabadmin admin $*"
+	touch "$@"
+
+
+$(MGR_ALL): ceph_deploy.mgr_create.%.evt: $(ADMIN_ALL)
+	ping -qc 1 $(FQDN)
+	. $(VIRTUAL_ENV)/bin/activate && \
+	fab -f $(MGMT_FABFILE) -u $(DEPLOY_ADMIN) -H $(FQDN) \
+		run:"cd ~/ceph-deploy/ && ceph-deploy --username fabadmin mgr create $*"
+	touch "$@"
+
+
+$(OSD_ALL): ceph_deploy.osd_create.%.evt: $(MGR_ALL)
+	ping -qc 1 $(FQDN)
+	. $(VIRTUAL_ENV)/bin/activate && \
+	fab -f $(MGMT_FABFILE) -u $(DEPLOY_ADMIN) -H $(FQDN) \
+		run:"cd ~/ceph-deploy/ && ceph-deploy --username fabadmin osd create --data /dev/vdb $*"
+	touch "$@"
+
+$(MDS_ALL): ceph_deploy.mds_create.%.evt: $(OSD_ALL)
+	ping -qc 1 $(FQDN)
+	. $(VIRTUAL_ENV)/bin/activate && \
+	fab -f $(MGMT_FABFILE) -u $(DEPLOY_ADMIN) -H $(FQDN) \
+		run:"cd ~/ceph-deploy/ && ceph-deploy --username fabadmin mds create $*"
+	touch "$@"
+
+
+ceph_deploy.check.evt: $(MDS_ALL)
+	ping -qc 1 $(FQDN)
+	. $(VIRTUAL_ENV)/bin/activate && \
+	fab -f $(MGMT_FABFILE) -u $(DEPLOY_ADMIN) -H $(FQDN) \
+		sudo:'ceph health' \
+		sudo:'ceph status'
+	touch "$@"
+
+
+ceph_conf.evt: payload/ceph.conf ceph_deploy.check.evt
+	ping -qc 1 $(FQDN)
+	. $(VIRTUAL_ENV)/bin/activate && \
+	fab -f $(MGMT_FABFILE) -u $(DEPLOY_ADMIN) -H $(FQDN) \
+		deploy.putconf:'$<,./ceph-deploy/' \
+		run:"cd ~/ceph-deploy/ && ceph-deploy --username fabadmin --overwrite-conf config push $(CEPH_DEPLOY_ALL)"
+	touch "$@"
+	

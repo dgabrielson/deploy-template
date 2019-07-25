@@ -1,0 +1,29 @@
+https://www.debian.org/CD/netinst/
+https://wiki.debian.org/DebianInstaller/Preseed/EditIso
+https://wiki.debian.org/Installation+Archive+USBStick
+https://ubuntuforums.org/showthread.php?t=2276498
+
+
+https://www.debian.org/releases/jessie/i386/apbs03.html.en
+http://sources.debian.net/src/simple-cdd/0.5.0/README/
+https://wiki.debian.org/Simple-CDD/Howto
+http://www.bishnet.net/tim/blog/2015/01/29/understanding-partman-autoexpert_recipe/
+
+You will need
+===============
+
+A working Debian system/VM; a source preseed file <src>.
+
+apt install simple-cdd
+mkdir build
+cd $_
+mkdir profiles
+scp <src> profiles/kvm-host.preseed
+cat << EOF | tee my-sdd.conf
+locale=en_CA.UTF-8
+profiles="kvm-host"
+auto_profiles="kvm-host"
+debian_mirror="http://ftp.ca.debian.org/debian"
+export KERNEL_PARAMS="priority-critical auto=true preseed/file=/cdrom/simple-sdd/default.preseed"
+EOF
+build-simple-cdd --conf $(pwd)/my-sdd.conf

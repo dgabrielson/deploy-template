@@ -1,0 +1,5 @@
+On compute nodes; make sure the following BIOS settings
+are updated *before* installation:
+
+Proccessor > Logical Processor: DISABLED
+Boot > Boot: EFI BOOT

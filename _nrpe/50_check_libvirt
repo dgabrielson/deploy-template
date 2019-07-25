@@ -1,0 +1,2 @@
+Defaults:nagios !requiretty
+nagios ALL=(root) NOPASSWD:/usr/lib/nagios/plugins/check_libvirt

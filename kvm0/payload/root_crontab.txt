@@ -1,0 +1,3 @@
+MAILTO="reports@example.com"
+
+0 0 * * * /usr/local/sbin/vm-backup.sh /var/local/disks/backup/

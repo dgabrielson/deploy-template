@@ -1,0 +1,1 @@
+../_make/nagios_check_smartmon.make

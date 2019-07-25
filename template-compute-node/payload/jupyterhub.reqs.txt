@@ -1,0 +1,5 @@
+jupyterhub
+notebook
+octave_kernel
+ipyparallel
+

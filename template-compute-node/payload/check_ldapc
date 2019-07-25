@@ -1,0 +1,35 @@
+#!/bin/sh
+set -e
+
+# search for cluster group
+search=":5000:"
+ldap_user_count=$(/usr/bin/getent passwd | /bin/grep ${search} | /usr/bin/wc -l)
+state="unknown"
+message="Unknown results"
+
+if [ "${ldap_user_count}" != "0" ]; then
+    message="${ldap_user_count} ldap users"
+    state="ok"
+else
+    message="ZERO ldap users found"
+    state="critical"
+fi
+
+case ${state} in
+"ok")
+echo "OK - ${message}"
+exit 0
+;;
+"warning")
+echo "WARNING - ${message}"
+exit 1
+;;
+"critical")
+echo "CRITICAL - ${message}"
+exit 2
+;;
+*)
+echo "UNKNOWN - ${message}"
+exit 3
+;;
+esac

@@ -1,0 +1,19 @@
+
+[Unit]
+Description=Eparch Cluster ComputeNode Service
+After=network-online.target
+
+[Service]
+Type=simple
+User=root
+Group=root
+
+ExecStart=/usr/local/gauss/computenode_poll.sh
+
+Restart=on-failure
+
+# Configures the time to wait before service is stopped forcefully.
+TimeoutStopSec=300
+
+[Install]
+WantedBy=multi-user.target

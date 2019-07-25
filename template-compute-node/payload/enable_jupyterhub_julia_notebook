@@ -1,0 +1,7 @@
+#!/usr/bin/env julia
+using Pkg
+Pkg.update()
+Pkg.add("IJulia")
+using IJulia
+IJulia.installkernel("Julia")
+

@@ -1,0 +1,121 @@
+#!/usr/bin/env bash
+set -e
+
+URL="$(/usr/local/sbin/shinyserver_latest_url)"
+if [[ -z "${URL}" ]]; then
+    echo "Could not determine latest shiny server url"
+    exit 1
+fi
+VERSION_FILE="/var/cache/shinyserver-last-modified"
+r_system_packages_update="/usr/local/sbin/r_system_packages_update"
+
+
+function url_last_modified()
+{
+    wget -q --server-response --spider "${URL}" 2>&1 | grep Last-Modified
+}
+
+
+function local_last_modified()
+{
+    if [[ -f "${VERSION_FILE}" ]]; then
+        cat ${VERSION_FILE}
+    fi
+}
+
+
+function update_local_last_modified()
+{
+    local remote_lm=$1
+    echo -n "${remote_lm}" > ${VERSION_FILE}
+}
+
+
+function update_available()
+{
+    local remote_lm=$1
+    [[ "${remote_lm}" != "$(local_last_modified)" ]]
+}
+
+
+function do_upgrade()
+{
+    local debfile=$(basename ${URL})
+    local remote_lm=$(url_last_modified)
+    if update_available "${remote_lm}"; then
+        wget -q "${URL}"
+        echo "Installing update... ${debfile}"
+        gdebi -nq "${debfile}"
+        rm "${debfile}"
+        update_local_last_modified "${remote_lm}"
+    fi
+}
+
+
+function do_delay()
+{
+    if [[ "${no_delay}" == "yes" ]]; then
+        return
+    fi
+    # delay differences based on host for rolling update
+    local delay=$[ ( $RANDOM % 60 )  + 1 ]
+    local name=$(hostname -s)
+    case "${name}" in
+        "node100") delay=1 ;;
+        "node101") delay=120 ;;
+        "node102") delay=240 ;;
+        "node103") delay=360 ;;
+    esac
+    sleep ${delay}s
+}
+
+
+function do_r_prereqs()
+{
+   $r_system_packages_update
+}
+
+
+function usage
+{
+    echo "usage: shinyserver_updater  [--nodelay || -h]"
+    echo "   ";
+    echo "  --nodelay       : Do not wait to start running";
+    echo "  -h | --help     : This message";
+}
+
+function parse_args
+{
+    # positional args
+    args=()
+
+    # named args
+    while [ "$1" != "" ]; do
+        case "$1" in
+            --nodelay )                   no_delay="yes";        ;;
+            -h | --help )                 usage;                 exit;; # quit and show usage
+            * )                           args+=("$1")           # if no match, add it to the positional args
+        esac
+        shift # move to next kv pair
+    done
+
+    # restore positional args
+    set -- "${args[@]}"
+
+    # set defaults
+    if [[ -z "$no_delay" ]]; then
+      no_delay="no";
+    fi
+}
+
+
+function main()
+{
+    parse_args
+    do_delay
+    do_r_prereqs
+    do_upgrade
+}
+
+
+main

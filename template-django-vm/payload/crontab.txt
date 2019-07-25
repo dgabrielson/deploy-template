@@ -1,0 +1,20 @@
+MAILTO="reports@example.com"
+
+15 0 * * *      ~/bin/manage.sh clearsessions
+31 4 * * *      ~/bin/manage.sh clean_orphan_obj_perms > /dev/null
+16 * * * *      ~/bin/manage.sh update_index > /dev/null
+
+#10 6 * * *      ~/bin/manage.sh appoint notify
+1 4 * * *       ~/bin/manage.sh aurora load_classes --delete
+2 4 * * *       ~/bin/manage.sh aurora update_enrollment
+31 4 * * *      ~/bin/manage.sh classes instructor_beat
+35 5 * * mon    ~/bin/manage.sh classes pull_important_dates
+30 0 * * *      ~/bin/manage.sh classes semester_beat
+#7 4 * * mon     ~/bin/manage.sh course_role multisectioncourse_scan -c
+3 4 * * *       ~/bin/manage.sh directory update_sessionals
+#5 * * * *       ~/bin/manage.sh djtwit timeline_update
+#*/30 * * * *    ~/bin/manage.sh djtwit tweet_shouts -v 2
+23 4 * * *      ~/bin/manage.sh gradebook gb2.iclicker.rescore --alive -v 0
+4 4 * * *       ~/bin/manage.sh graduate_students directory_check --auto
+16 0 * * *      ~/bin/manage.sh graduate_students beat
+6 4 * * *       ~/bin/manage.sh people verify_email_cleanup

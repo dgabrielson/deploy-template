@@ -1,0 +1,4 @@
+diesel
+greenlet
+requests
+nagios-api

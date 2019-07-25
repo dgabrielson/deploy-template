@@ -1,0 +1,57 @@
+{
+    "SERVER_EMAIL": "exampleapp-error@example.com", 
+    "DEFAULT_FROM_EMAIL": "no-reply@example.com", 
+    "ADMINS": [
+        ["Math Admin", "reports@example.com"]
+    ],
+    "MANAGERS": [
+        ["Math Manager", "reports@example.com"]
+    ],
+    "SEND_BROKEN_LINK_EMAILS": false,
+    "DEBUG": false, 
+    "STATIC_ROOT": "/storage/html/static", 
+    "MEDIA_ROOT": "/storage/html/media", 
+    "STATIC_URL": "/static/", 
+    "MEDIA_URL": "/media/", 
+    "DATABASES": {
+        "default": {
+            "ENGINE": "django.db.backends.postgresql_psycopg2", 
+            "NAME": "example_site", 
+            "HOST": "db0.example.com", 
+            "USER": "exampleapp", 
+            "PASSWORD": "qF_c#1d@58Nh", 
+            "PORT": ""
+        }
+    }, 
+    "EMAIL_BACKEND": "django.core.mail.backends.smtp.EmailBackend", 
+    "EMAIL_HOST": "mail.example.com",
+    "EMAIL_PORT": 25, 
+    "EMAIL_USE_TLS": false, 
+    "ALLOWED_HOSTS": [
+        "exampleapp.example.com", 
+        "exampleapp",
+        "dispatch.example.com", 
+        "dispatch",
+        "www.example.com",
+        "test.example.com"
+    ], 
+    "SECRET_KEY": "+i!l%053n#!re(wwq$@!u*m81mp(z1ovwrboi-pz+m2u^%8kh_", 
+    "AUTH_LDAP_BIND_DN": "CN=Math LDAP_exampleldap,OU=Users,OU=Science,OU=CORP,DC=ad,DC=umanitoba,DC=ca",
+    "AUTH_LDAP_BIND_PASSWORD": "I282rCes",
+    "UOFM_LDAP_CREATE_UNKNOWN_USERS": true,
+    "HAYSTACK_WHOOSH_PATH": "/storage/html/whoosh",
+    "FILESHARE_CONFIG": {
+        "share_path": "/storage/html/protected/fileshare",
+        "use_sendfile": true
+    },
+    "GRADUATE_STUDENT_CONFIG": {
+        "jsi18n_url": "/jsi18n/",
+        "directory:typefilter_list": [
+            ["graduate-student", "active"]
+        ],
+        "storage_kwargs": {
+            "location": "/storage/html/protected/gs-paperwork"
+        },
+        "use_sendfile": true
+    }
+}

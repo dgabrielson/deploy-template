@@ -1,0 +1,26 @@
+# symlink your virtualenv nagios-api script first:
+#   e.g., sudo ln -s /home/statsadmin/.virtualenvs/nagios-api/bin/nagios-api /usr/local/sbin/nagios-api
+
+
+[Unit]
+Description=Nagios API
+After=syslog.target nagios3.service
+
+
+[Service]
+ExecStart=/usr/local/sbin/nagios-api \
+     -p 8080 \
+     -c /var/lib/nagios3/rw/nagios.cmd \
+     -s /var/cache/nagios3/status.dat \
+     -l /var/log/nagios3/nagios.log \
+     -f /var/lib/nagios3/rw/nagios-api.pid
+Type=simple
+PIDFile=/var/lib/nagios3/rw/nagios-api.pid
+Restart=always
+RestartSec=30
+User=nagios
+Group=nagios
+
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,50 @@
+#### begin generated dhcpd reservations ####
+host provision {
+    hardware ethernet 52:54:00:22:38:7f;
+    fixed-address 192.168.1.1;
+}
+host mcp {
+    hardware ethernet 52:54:00:6e:c8:f3;
+    fixed-address 192.168.1.5;
+}
+host files {
+    hardware ethernet 52:54:00:54:7c:f0;
+    fixed-address 192.168.1.10;
+}
+host db0 {
+    hardware ethernet 52:54:00:3f:f2:97;
+    fixed-address 192.168.1.15;
+}
+host logsrv {
+    hardware ethernet 52:54:00:46:03:e8;
+    fixed-address 192.168.1.25;
+}
+host mail {
+    hardware ethernet 52:54:00:82:77:5c;
+    fixed-address 192.168.1.30;
+}
+host cache {
+    hardware ethernet 52:54:00:2c:c4:96;
+    fixed-address 192.168.1.35;
+}
+host logapp {
+    hardware ethernet 52:54:00:b7:9a:10;
+    fixed-address 192.168.1.45;
+}
+host www-files {
+    hardware ethernet 52:54:00:2e:31:16;
+    fixed-address 192.168.1.56;
+}
+host dispatch {
+    hardware ethernet 52:54:00:68:3f:52;
+    fixed-address 192.168.1.200;
+}
+host kvm0 {
+    hardware ethernet 00:24:36:f5:93:82;
+    fixed-address 192.168.1.201;
+}
+host storage0 {
+    hardware ethernet 00:24:36:f5:93:83;
+    fixed-address 192.168.1.202;
+}
+#### end generated  dhcpd reservations ####

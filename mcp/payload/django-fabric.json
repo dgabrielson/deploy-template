@@ -1,0 +1,18 @@
+{
+    "default_host": "exampleapp",
+    "site_aliases": {"exampleapp": "CLUSTER_USER@exampleapp.example.com",
+                     "logapp": "CLUSTER_USER@logapp.example.com"
+                     },
+    "extra_roledefs": {
+        "all-django": ["CLUSTER_USER@logapp.example.com",
+                       "CLUSTER_USER@exampleapp.example.com"]
+        },
+    "CLUSTER_USER@logapp.example.com": {
+        "virtualenv_path": "/home/CLUSTER_USER/.virtualenvs/logapp",
+        "appservice_list": ["touch:/etc/uwsgi/logapp.ini"]
+        },
+    "CLUSTER_USER@exampleapp.example.com": {
+        "virtualenv_path": "/home/CLUSTER_USER/.virtualenvs/exampleapp",
+        "appservice_list": ["touch:/etc/uwsgi/exampleapp.ini"]
+        }
+}

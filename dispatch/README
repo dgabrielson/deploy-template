@@ -1,0 +1,7 @@
+This VM is usually configured with two interfaces; one
+for the internal network and one for the public network
+(a bridged interface).
+
+It is important that the public network have the default
+route for the VM, otherwise things will not work properly
+in most cases.

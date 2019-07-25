@@ -1,0 +1,37 @@
+# Alias to existing account
+alias1@domain.tld user1@domain.tld
+
+# Forward to external email address
+alias2@domain.tld external@gmail.com
+
+# root is a standard alias
+# postmaster, and MAILER-DAEMON are required by convention
+# RFC2142 BUSINESS-RELATED MAILBOX NAMES
+#   info, marketing, sales, support
+# RFC2142 NETWORK OPERATIONS MAILBOX NAMES
+#   abuse, noc, security
+# RFC2142 SUPPORT MAILBOX NAMES
+#    postmaster, hostmaster, usenet, news, webmaster, www, uucp, ftp
+# Mailing lists list@domain.tld **must** have list-request@domain.tld
+
+root@domain.tld  realuser@domain.tld
+MAILER-DAEMON@domain.tld         root@domain.tld
+business-manager@domain.tld      root@domain.tld
+network-operations@domain.tld    root@domain.tld
+internet-services@domain.tld     root@domain.tld
+info@domain.tld      business-manager@domain.tld
+marketing@domain.tld business-manager@domain.tld
+sales@domain.tld     business-manager@domain.tld
+support@domain.tld   business-manager@domain.tld
+abuse@domain.tld     network-operations@domain.tld
+noc@domain.tld       network-operations@domain.tld
+security@domain.tld  network-operations@domain.tld
+postmaster@domain.tld    internet-services@domain.tld
+hostmaster@domain.tld    internet-services@domain.tld
+usenet@domain.tld        internet-services@domain.tld
+news@domain.tld          internet-services@domain.tld
+webmaster@domain.tld     internet-services@domain.tld
+www@domain.tld           internet-services@domain.tld
+uucp@domain.tld          internet-services@domain.tld
+ftp@domain.tld           internet-services@domain.tld
+realuser@domain.tld  nobody@example.com
